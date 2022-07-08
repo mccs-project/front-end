@@ -2,19 +2,16 @@ import React, { useState } from 'react';
 import logo from './logo.svg';
 import './App.css';
 
-import TwitterAuthorizationButton, { TwitterAuthorizationButtonProps } from './components/TwitterAuthorizationButton';
+import TwitterAuthorizationButton from './components/TwitterAuthorizationButton';
 
 function App() {
 
   const [twitterConnected, setTwitterConnected] = useState(false);
-  const twitterOnConnect = ()=>{
+  const twitterButtonClick = ()=>{
     console.log("TODO: twitter onConnect");
-    setTwitterConnected(true);
+    setTwitterConnected(!twitterConnected);
   };
-  const twitterOnDisconnect = ()=>{
-    console.log("TODO: twitter onDisconnect");
-    setTwitterConnected(false);
-  };
+  
 
   return (
     <div className="App">
@@ -22,8 +19,8 @@ function App() {
         {/* <img src={logo} className="App-logo" alt="logo" /> */}
       </header>
       
-      <TwitterAuthorizationButton isConnected={twitterConnected} onConnect={twitterOnConnect} onDisconnect={twitterOnDisconnect}/>
-      
+      <TwitterAuthorizationButton isConnected={twitterConnected} onClick={twitterButtonClick} />
+
     </div>
   );
 }
