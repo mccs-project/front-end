@@ -9,7 +9,7 @@ export class TwitterOAuth2 {
     private readonly REDIRECT_PATH_NAME = "/callback/twitter";
     private readonly CLIENT_ID: string = "SGFnYWloVVFHdG4zeUdEenJKcHo6MTpjaQ";
     private readonly RANDOM_STR_LEN = 80;   //  ランダム文字列で生成する長さ
-    private readonly SCOPES = ["users.read", "offline.access"];
+    private readonly SCOPES = ["users.read", "tweet.read", "offline.access"];
     private readonly CODE_CHALLENGE_METHOD: "s256"|"plain" = "plain";   //  TODO: s256が推奨される
 
     private readonly SESSION_STORAGE_KEY_STATE = "twitter_state";
@@ -124,6 +124,22 @@ export class TwitterOAuth2 {
             },
             body: '${bodyStr}'
         }).then(response=>{ console.log(response); response.text().then(txt=>{console.log(txt)}); });`);
+
+        fetch("http://localhost:8082/api/eldorado/twitter/oauth2/token", {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: bodyStr
+        }).then(async response=>{
+            console.log(response);
+            const responseBody: {
+                "token_type":string,
+                "expires_in":number,
+                "access_token":string,
+                "scope":string,
+                "refresh_token":string
+            } = await response.json();
+            // response.text().then(console.log);
+        });
     }
 
     private getRedirectUrl(): string {
