@@ -13,7 +13,7 @@ export class Fetch {
 
                 //  保持しているトークンをヘッダに追加
                 init = init ?? {};
-                init.headers = Token.appendAuthorizationHeader(init?.headers);
+                init.headers = Token.appendAuthorizationHeader(init.headers);
 
                 //  NODE_ENVがdevelopmentかつ、モックサーバーを起動しない場合は宛先のサーバーを環境変数の内容で上書き
                 if(Env.isDevelopment && Env.useMockServer === false) {

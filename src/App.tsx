@@ -11,7 +11,7 @@ function App() {
   useEffect(()=>{
     (async()=>{
       //  ローカルサーバーのAPIアクセスで利用するトークンを更新
-      await new Token().refresh();
+      await new Token().refresh().catch(err=>{ console.error(err); });
 
       //  twitterの認可ページからリダイレクトされている場合
       if(TwitterOAuth2.isRedirectUrl(window.location.href)) {

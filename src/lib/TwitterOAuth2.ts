@@ -22,7 +22,7 @@ export class TwitterOAuth2 {
     /** OAuthのリダイレクト先（ローカルサーバー）での処理を行います */
     public async onRedirectUrl(): Promise<void> {
         //  現在のURLがリダイレクト先でない場合は例外
-        if(TwitterOAuth2.isRedirectUrl(window.location.href)) { throw new Error("{B62B571C-2DA0-49D2-8924-171B6735DDA1}"); }
+        if(TwitterOAuth2.isRedirectUrl(window.location.href) === false) { throw new Error("{B62B571C-2DA0-49D2-8924-171B6735DDA1}"); }
 
         
         const code: string = this.getCodeFromRedirectPage();
