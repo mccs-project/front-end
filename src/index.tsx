@@ -4,8 +4,9 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
-//  環境変数『USE_MOCK_SERVER』が『true』の時、モックサーバーを起動
-if (process.env.USE_MOCK_SERVER && process.env.USE_MOCK_SERVER.toLowerCase() === 'true') {
+//  環境変数『REACT_APP_USE_MOCK_SERVER』が『true』の時、モックサーバーを起動
+console.log(`process.env.REACT_APP_USE_MOCK_SERVER: ${process.env.REACT_APP_USE_MOCK_SERVER}`);
+if (process.env.REACT_APP_USE_MOCK_SERVER && process.env.REACT_APP_USE_MOCK_SERVER.toLowerCase() === 'true') {
   import("./mock/browser").then(({worker})=>{
     worker.start();
   });
