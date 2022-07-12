@@ -4,15 +4,19 @@ import './App.css';
 
 import TwitterAuthorizationButton from './components/TwitterAuthorizationButton';
 import { TwitterOAuth2 } from './lib/TwitterOAuth2';
+import { Token } from './lib/Token';
 
 function App() {
 
   useEffect(()=>{
     (async()=>{
-      const twitter = new TwitterOAuth2();
+      //  トークンを更新
+      await new Token().refresh();
+
 
       //  twitterの認可ページからリダイレクトされた時
-      if(twitter.isRedirectUrl(window.location.href)) {
+      if(TwitterOAuth2.isRedirectUrl(window.location.href)) {
+        const twitter = new TwitterOAuth2();
         console.log(window.location.href);
         const code: string = twitter.getCodeFromRedirectPage();
         const codeVerifier: string|null = twitter.popCodeVerifierFromSessionStorage();

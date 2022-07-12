@@ -1,3 +1,4 @@
+import { ApiPath } from "../shared/api/Path";
 import { Util } from "./Util";
 
 /**
@@ -6,7 +7,7 @@ import { Util } from "./Util";
  */
 export class TwitterOAuth2 {
     private readonly TWITTER_AUTH_URL = "https://twitter.com/i/oauth2/authorize";
-    private readonly REDIRECT_PATH_NAME = "/callback/twitter";
+    private static readonly REDIRECT_PATH_NAME = "/callback/twitter";
     private readonly CLIENT_ID: string = "SGFnYWloVVFHdG4zeUdEenJKcHo6MTpjaQ";
     private readonly RANDOM_STR_LEN = 80;   //  ランダム文字列で生成する長さ
     private readonly SCOPES = ["users.read", "tweet.read", "offline.access"];
@@ -16,7 +17,7 @@ export class TwitterOAuth2 {
     private readonly SESSION_STORAGE_KEY_CODE_VERIFIER = "twitter_code_verifier";
 
     /** OAuthのリダイレクト先のURLかどうかを返します */
-    public isRedirectUrl(url: string): boolean {
+    public static isRedirectUrl(url: string): boolean {
         return new URL(url).pathname === this.REDIRECT_PATH_NAME;
     }
 
@@ -116,16 +117,8 @@ export class TwitterOAuth2 {
         }).toString();
         console.log(`bodyStr2[2]: ${bodyStr}`);
 
-        console.log(`fetch('https://api.twitter.com/2/oauth2/token', {
-            method: 'POST',
-            mode: 'no-cors',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            body: '${bodyStr}'
-        }).then(response=>{ console.log(response); response.text().then(txt=>{console.log(txt)}); });`);
-
-        fetch("http://localhost:8082/api/eldorado/twitter/oauth2/token", {
+        
+        fetch(ApiPath.TWITTER_OAUTH2_TOKEN, {
             method: "POST",
             headers: { "Content-Type": "application/x-www-form-urlencoded" },
             body: bodyStr
@@ -143,7 +136,7 @@ export class TwitterOAuth2 {
     }
 
     private getRedirectUrl(): string {
-        return new URL(window.location.href).origin + this.REDIRECT_PATH_NAME;
+        return new URL(window.location.href).origin + TwitterOAuth2.REDIRECT_PATH_NAME;
     }
 
     /** セッションストレージにstateの値を保存します */
