@@ -21,7 +21,8 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "npm run link:classes && react-scripts start",
+    "start": "npm run link:classes && cross-env NODE_ENV=development react-scripts start",
+    "start:mock": "npm run link:classes && cross-env USE_MOCK_SERVER=true react-scripts start",
     "build": "npm run link:classes && cross-env GENERATE_SOURCEMAP=false react-scripts build",
     "test": "npm run link:classes && react-scripts test",
     "eject": "react-scripts eject",
@@ -46,6 +47,10 @@
     ]
   },
   "devDependencies": {
-    "cross-env": "^7.0.3"
+    "cross-env": "^7.0.3",
+    "msw": "^0.43.1"
+  },
+  "msw": {
+    "workerDirectory": "public"
   }
 }
