@@ -21,12 +21,12 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "npm run link:classes && cross-env NODE_ENV=development react-scripts start",
-    "start:mock": "npm run link:classes && cross-env REACT_APP_USE_MOCK_SERVER=true react-scripts start",
-    "build": "npm run link:classes && cross-env GENERATE_SOURCEMAP=false react-scripts build",
-    "test": "npm run link:classes && react-scripts test",
+    "start": "npm run link:shared && cross-env NODE_ENV=development react-scripts start",
+    "start:mock": "npm run link:shared && cross-env REACT_APP_USE_MOCK_SERVER=true react-scripts start",
+    "build": "npm run link:shared && cross-env GENERATE_SOURCEMAP=false react-scripts build",
+    "test": "npm run link:shared && react-scripts test",
     "eject": "react-scripts eject",
-    "link:classes": "node tools/link-classes.js"
+    "link:shared": "node tools/link-shared.js"
   },
   "eslintConfig": {
     "extends": [
