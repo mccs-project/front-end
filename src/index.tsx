@@ -4,22 +4,19 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { Fetch } from './lib/Fetch';
+import { Env } from './lib/Env';
 
 //  fetchを置き換え
 window.fetch = Fetch.getOverrideFetch();
 
 
-//  起動オプションによってMockServerを起動する
-const startMockServer = new Promise<void>((resolve, reject) => {
-  //  環境変数『REACT_APP_USE_MOCK_SERVER』が『true』の時、モックサーバーを起動
-  if (process.env.REACT_APP_USE_MOCK_SERVER && process.env.REACT_APP_USE_MOCK_SERVER.toLowerCase() === 'true') {
-    import("./mock/browser").then(({worker})=>{
-      worker.start().then(()=>{ resolve(); });
-    });
+// //  起動オプションによってMockServerを起動する
+const startMockServer = new Promise<void>(async(resolve, reject) => {
+  if(Env.useMockServer) {
+    const { worker } = await import("./mock/browser");
+    await worker.start();
   }
-  else {
-    resolve();
-  }
+  resolve();
 });
 
 
