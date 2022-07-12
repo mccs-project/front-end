@@ -21,7 +21,7 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "npm run link:shared && cross-env NODE_ENV=development react-scripts start",
+    "start": "npm run link:shared && react-scripts start",
     "start:mock": "npm run link:shared && cross-env REACT_APP_USE_MOCK_SERVER=true react-scripts start",
     "build": "npm run link:shared && cross-env GENERATE_SOURCEMAP=false react-scripts build",
     "test": "npm run link:shared && react-scripts test",
