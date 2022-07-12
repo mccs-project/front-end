@@ -1,10 +1,10 @@
 import { ApiPath } from "../shared/api/Path";
-import { LocalStrageKeys } from "./LocalStrageKeys";
+import { LocalStorageKeys } from "./LocalStorageKeys";
 
 export class Token {
     public async refresh(): Promise<void> {
         const response = await fetch(ApiPath.TOKEN);
-        
+
         const body = await response.json() as TokenResponseBody;
 
         this.saveToken(body.token);
@@ -24,9 +24,9 @@ export class Token {
     }
 
     private loadToken(): string|null {
-        return localStorage.getItem(LocalStrageKeys.TOKEN);
+        return localStorage.getItem(LocalStorageKeys.TOKEN);
     }
     private saveToken(token: string): void {
-        localStorage.setItem(LocalStrageKeys.TOKEN, token);
+        localStorage.setItem(LocalStorageKeys.TOKEN, token);
     }
 }

@@ -10,22 +10,12 @@ function App() {
 
   useEffect(()=>{
     (async()=>{
-      //  トークンを更新
+      //  ローカルサーバーのAPIアクセスで利用するトークンを更新
       await new Token().refresh();
 
-
-      //  twitterの認可ページからリダイレクトされた時
+      //  twitterの認可ページからリダイレクトされている場合
       if(TwitterOAuth2.isRedirectUrl(window.location.href)) {
-        const twitter = new TwitterOAuth2();
-        console.log(window.location.href);
-        const code: string = twitter.getCodeFromRedirectPage();
-        const codeVerifier: string|null = twitter.popCodeVerifierFromSessionStorage();
-        if(codeVerifier === null) { throw new Error("{A799D88A-D023-4645-9CFD-273257263720}"); }
-
-        //  AccessKey取得テスト
-        twitter.getAccessKeyTest(code, codeVerifier);
-        //  現在のURLをルートに戻す
-        window.history.replaceState(null, "", "/");
+        new TwitterOAuth2().onRedirectUrl();
       }
     })();
   }, []);

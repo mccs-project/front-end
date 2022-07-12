@@ -8,7 +8,7 @@ export class Fetch {
         return (input: RequestInfo | URL, init?: RequestInit | undefined) => {
 
             //  ローカルサーバーのAPIへアクセスする場合は保持しているトークンをヘッダに追加
-            if(input.toString().startsWith(ApiPath.API_ROOT)) {
+            if(input.toString().startsWith(ApiPath.API_ROOT_PATH_NAME)) {
                 init = init ?? {};
                 init.headers = Token.appendAuthorizationHeader(init?.headers);
             }

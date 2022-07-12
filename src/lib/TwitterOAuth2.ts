@@ -1,4 +1,5 @@
 import { ApiPath } from "../shared/api/Path";
+import { SessionStorageKyes } from "./SessionStorageKyes";
 import { Util } from "./Util";
 
 /**
@@ -13,12 +14,25 @@ export class TwitterOAuth2 {
     private readonly SCOPES = ["users.read", "tweet.read", "offline.access"];
     private readonly CODE_CHALLENGE_METHOD: "s256"|"plain" = "plain";   //  TODO: s256が推奨される
 
-    private readonly SESSION_STORAGE_KEY_STATE = "twitter_state";
-    private readonly SESSION_STORAGE_KEY_CODE_VERIFIER = "twitter_code_verifier";
-
     /** OAuthのリダイレクト先のURLかどうかを返します */
     public static isRedirectUrl(url: string): boolean {
         return new URL(url).pathname === this.REDIRECT_PATH_NAME;
+    }
+
+    /** OAuthのリダイレクト先（ローカルサーバー）での処理を行います */
+    public async onRedirectUrl(): Promise<void> {
+        //  現在のURLがリダイレクト先でない場合は例外
+        if(TwitterOAuth2.isRedirectUrl(window.location.href)) { throw new Error("{B62B571C-2DA0-49D2-8924-171B6735DDA1}"); }
+
+        
+        const code: string = this.getCodeFromRedirectPage();
+        const codeVerifier: string|null = this.popCodeVerifierFromSessionStorage();
+        if(codeVerifier === null) { throw new Error("{A799D88A-D023-4645-9CFD-273257263720}"); }
+
+        //  AccessKey取得テスト
+        this.getAccessKeyTest(code, codeVerifier);
+        //  現在のURLをルートに戻す
+        window.history.replaceState(null, "", "/");
     }
 
     /**
@@ -72,7 +86,7 @@ export class TwitterOAuth2 {
     }
 
     /** 認可画面からリダイレクトされた画面で認可用のコードを取得します */
-    public getCodeFromRedirectPage(): string {
+    private getCodeFromRedirectPage(): string {
         
         //  保存してあるstateを取得
         const state = this.popStateFromSessionStorage();
@@ -141,21 +155,21 @@ export class TwitterOAuth2 {
 
     /** セッションストレージにstateの値を保存します */
     private setStateToSessionStorage(state: string): void {
-        sessionStorage.setItem(this.SESSION_STORAGE_KEY_STATE, state);
+        sessionStorage.setItem(SessionStorageKyes.TWITTER_STATE, state);
     }
     /** セッションストレージにcode_verifierの値を保存します */
     private setCodeVerifierToSessionStorage(codeVerifier: string): void {
-        sessionStorage.setItem(this.SESSION_STORAGE_KEY_CODE_VERIFIER, codeVerifier);
+        sessionStorage.setItem(SessionStorageKyes.TWITTER_CODE_VERIFIER, codeVerifier);
     }
 
     /** セッションストレージからstateの値を取り出します */
     private popStateFromSessionStorage(): string|null {
-        const state = sessionStorage.getItem(this.SESSION_STORAGE_KEY_STATE);
-        sessionStorage.removeItem(this.SESSION_STORAGE_KEY_STATE);
+        const state = sessionStorage.getItem(SessionStorageKyes.TWITTER_STATE);
+        sessionStorage.removeItem(SessionStorageKyes.TWITTER_STATE);
         return state;
     }
     /** セッションストレージからcode_verifierの値を取り出します */
-    public popCodeVerifierFromSessionStorage(): string|null {
-        return sessionStorage.getItem(this.SESSION_STORAGE_KEY_CODE_VERIFIER);
+    private popCodeVerifierFromSessionStorage(): string|null {
+        return sessionStorage.getItem(SessionStorageKyes.TWITTER_CODE_VERIFIER);
     }
 }
