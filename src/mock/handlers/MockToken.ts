@@ -1,5 +1,6 @@
 import { RestRequest } from "msw";
 import { Util } from "../../lib/Util";
+import { TokenResponseBody } from "../../shared/api/types";
 
 export class MockToken {
     
