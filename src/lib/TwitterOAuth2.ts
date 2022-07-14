@@ -1,4 +1,5 @@
 import { ApiPath } from "../shared/api/Path";
+import { TwitterTokenRequestBody } from "../shared/api/types/Twitter";
 import { SessionStorageKyes } from "./SessionStorageKyes";
 import { Util } from "./Util";
 
@@ -122,13 +123,14 @@ export class TwitterOAuth2 {
         console.log(`authorizationCode: ${authorizationCode}`);
         console.log(`codeVerifier: ${codeVerifier}`);
 
-        let bodyStr = new URLSearchParams({
+        const param: TwitterTokenRequestBody = {
             "code": authorizationCode,
             "grant_type": "authorization_code",
             "client_id": this.CLIENT_ID,
             "redirect_uri": this.getRedirectUrl(),
             "code_verifier": codeVerifier
-        }).toString();
+        };
+        let bodyStr = new URLSearchParams(param as any).toString();
         console.log(`bodyStr2[2]: ${bodyStr}`);
 
         
