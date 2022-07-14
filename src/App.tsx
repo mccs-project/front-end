@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import logo from './logo.svg';
 import './App.css';
 
@@ -8,8 +8,13 @@ import { Token } from './lib/Token';
 
 function App() {
 
+  const initialize = useRef(false);
   useEffect(()=>{
     (async()=>{
+      //  NODE_ENVがdevelopmentの場合2回呼ばれるので1回しか処理をしないようにする
+      if(initialize.current === true) { return; }
+      else { initialize.current = true; }
+
       //  ローカルサーバーのAPIアクセスで利用するトークンを更新
       await new Token().refresh().catch(err=>{ console.error(err); });
 
