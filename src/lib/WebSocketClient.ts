@@ -1,4 +1,5 @@
 import ReconnectingWebSocket, { Message } from "reconnecting-websocket";
+import { WebSocketMessage } from "../shared/api/interfaces";
 import { Env } from "./Env";
 
 export class WebSocketClient {
@@ -21,12 +22,18 @@ export class WebSocketClient {
     }
 
     private async onMessage(event: MessageEvent<any>): Promise<void> {
-        console.log(event.data);
+        const message: WebSocketMessage = JSON.parse(event.data);
+        if(message === undefined || message.data === undefined || message.command === undefined) {
+            console.error(message);
+            throw new Error("{5D343596-B940-4455-AB71-811B60D04090}");
+        }
+
         //  TODO 
+        console.log(JSON.stringify(message.data));
     }
 
-    public send(data: Message): void {
-        this._ws.send(data);
+    public send(data: WebSocketMessage): void {
+        this._ws.send(JSON.stringify(data));
     }
     public close(code?: number, reason?: string): void {
         this._ws.close(code, reason);

@@ -1,10 +1,10 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
-import { Fetch } from './lib/Fetch';
-import { Env } from './lib/Env';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import "./index.css";
+import App from "./App";
+import reportWebVitals from "./reportWebVitals";
+import { Fetch } from "./lib/Fetch";
+import { Env } from "./lib/Env";
 
 //  fetchを置き換え
 window.fetch = Fetch.getOverrideFetch();

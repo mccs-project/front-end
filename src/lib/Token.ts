@@ -1,5 +1,5 @@
 import { ApiPath } from "../shared/api/Path";
-import { TokenResponseBody } from "../shared/api/types";
+import { TokenResponseBody } from "../shared/api/interfaces";
 import { LocalStorageKeys } from "./LocalStorageKeys";
 
 export class Token {

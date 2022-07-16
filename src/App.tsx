@@ -7,6 +7,7 @@ import { TwitterOAuth2 } from "./lib/TwitterOAuth2";
 import { Token } from "./lib/Token";
 import { Button } from "@mui/material";
 import { WebSocketClient } from "./lib/WebSocketClient";
+import { WebSocketMessage } from "./shared/api/interfaces";
 
 
 
@@ -55,7 +56,7 @@ function App() {
       <TwitterAuthorizationButton isConnected={twitterConnected} onClick={twitterButtonClick} />
       <Button onClick={()=>{
         // fetch("/api/twitter/users/me",).then(async res=>{ console.log(await res.text()); } ).catch(err=>console.error(err));
-        webSocket.current?.send("hoge-");
+        webSocket.current?.send({ command: "/test/client", data: { test: "client test message" } } as WebSocketMessage);
       }} >hoge</Button>
 
     </div>
