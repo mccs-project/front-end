@@ -1,7 +1,5 @@
 import { ApiPath } from "../shared/api/Path";
 import { TwitterOAuth2AccessUrlResponseBody, TwitterTokenRequestBody } from "../shared/api/types/Twitter";
-import { SessionStorageKyes } from "./SessionStorageKyes";
-import { Util } from "./Util";
 
 /**
  * TwitterのOAuth2.0認証を行うためのクラス

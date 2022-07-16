@@ -10,7 +10,7 @@ import { Env } from './lib/Env';
 window.fetch = Fetch.getOverrideFetch();
 
 
-// //  起動オプションによってMockServerを起動する
+// //  起動オプションが有効な時、MockServerを起動する
 const startMockServer = new Promise<void>(async(resolve, reject) => {
   if(Env.useMockServer) {
     const { worker } = await import("./mock/browser");

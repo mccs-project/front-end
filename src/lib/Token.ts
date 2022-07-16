@@ -3,13 +3,21 @@ import { TokenResponseBody } from "../shared/api/types";
 import { LocalStorageKeys } from "./LocalStorageKeys";
 
 export class Token {
+
+    public getToken(): string {
+        const token: string|null = this.loadTokenFromStorage();
+        if(token === null) { throw new Error("{4A66A37C-5459-4A98-98E4-0F4CF98CC43C}"); }
+
+        return token;
+    }
+
     public async refresh(): Promise<void> {
         const response = await fetch(ApiPath.TOKEN);
 
         const body = await response.json() as TokenResponseBody;
 
         if(body.token) {
-            this.saveToken(body.token);
+            this.saveTokenToStorage(body.token);
         }
         else {
             throw new Error("{148AE973-5799-4F9E-8132-DA8D9424BAC1}");
@@ -18,7 +26,7 @@ export class Token {
 
     public static appendAuthorizationHeader(header: HeadersInit | undefined): HeadersInit|undefined {
 
-        const token: string|null = new Token().loadToken();
+        const token: string|null = new Token().loadTokenFromStorage();
 
         //  トークンが取得できた場合は『Authorization』ヘッダを追加
         if(token !== null) {
@@ -33,10 +41,10 @@ export class Token {
         }
     }
 
-    private loadToken(): string|null {
+    private loadTokenFromStorage(): string|null {
         return localStorage.getItem(LocalStorageKeys.TOKEN);
     }
-    private saveToken(token: string): void {
+    private saveTokenToStorage(token: string): void {
         localStorage.setItem(LocalStorageKeys.TOKEN, token);
     }
 }
