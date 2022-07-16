@@ -15,6 +15,14 @@ export class Fetch {
                 init = init ?? {};
                 init.headers = Token.appendAuthorizationHeader(init.headers);
 
+                //  POSTの場合は『Content-Type: application/json』のヘッダを追加
+                if(init.method?.toUpperCase() === "POST") {
+                    init.headers = {
+                        ...init.headers,
+                        "Content-Type": "application/json",
+                    };
+                }
+
                 //  NODE_ENVがdevelopmentかつ、モックサーバーを起動しない場合は宛先のサーバーを環境変数の内容で上書き
                 if(Env.isDevelopment && Env.useMockServer === false) {
                     input = `${new URL(window.location.href).protocol}//${Env.devApiServerHostName}:${Env.devApiServerPort}${input.toString()}`;
