@@ -1,5 +1,6 @@
 import { ApiPath } from "../shared/api/Path";
 import { TwitterOAuth2AccessUrlResponseBody, TwitterTokenRequestBody } from "../shared/api/interfaces";
+import { myFetch } from "./Fetch";
 
 /**
  * TwitterのOAuth2.0認証を行うためのクラス
@@ -35,7 +36,7 @@ export class TwitterOAuth2 {
         if(state === null) { throw new Error("{344570DB-BF1C-449C-AA74-A3841A12051F}"); }    //  fail safe
 
         const body: TwitterTokenRequestBody = { code, state };
-        const response = await fetch(ApiPath.TWITTER_OAUTH2_TOKEN, {
+        const response = await myFetch(ApiPath.TWITTER_OAUTH2_TOKEN, {
             method: "POST",
             body: JSON.stringify(body),
         })
@@ -50,7 +51,7 @@ export class TwitterOAuth2 {
     public async authorize(): Promise<void> {
 
         //  認可ページのURLを取得
-        const response = await fetch(ApiPath.TWITTER_OAUTH2_ACCESS_URL);
+        const response = await myFetch(ApiPath.TWITTER_OAUTH2_ACCESS_URL);
         const body: TwitterOAuth2AccessUrlResponseBody = await response.json();
         const url: string = body.url;
 

@@ -1,0 +1,4 @@
+.trim-image-to-circle {
+    border-radius: 50%;
+    background-position: center center;
+}

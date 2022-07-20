@@ -3,11 +3,11 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
-import { Fetch } from "./lib/Fetch";
+// import { Fetch } from "./lib/Fetch";
 import { Env } from "./lib/Env";
 
-//  fetchを置き換え
-window.fetch = Fetch.getOverrideFetch();
+// //  fetchを置き換え
+// window.fetch = Fetch.getOverrideFetch();
 
 
 // //  起動オプションが有効な時、MockServerを起動する
@@ -26,9 +26,9 @@ startMockServer.then(()=>{
     document.getElementById('root') as HTMLElement
   );
   root.render(
-    <React.StrictMode>
+    // <React.StrictMode>
       <App />
-    </React.StrictMode>
+    // </React.StrictMode>
   );
 });
 
