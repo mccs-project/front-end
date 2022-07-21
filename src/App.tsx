@@ -11,6 +11,7 @@ import { WebSocketMessage } from "./shared/api/interfaces";
 import { MetaMaskAccountButton, TwitterAccountButton } from "./components/AccountButton";
 
 import { Env } from "./lib/Env";
+import { useIsMetaMaskConnectedValue, useIsTwitterConnectedValue } from "./hooks";
 
 
 
@@ -36,6 +37,8 @@ function App() {
     })();
   }, []);
  
+  const isTwitterConnected: boolean|undefined = useIsTwitterConnectedValue();
+  const isMetaMaskConnected: boolean|undefined = useIsMetaMaskConnectedValue();
 
   return (
     <div className="App">
@@ -49,6 +52,12 @@ function App() {
         // fetch("/api/twitter/users/me",).then(async res=>{ console.log(await res.text()); } ).catch(err=>console.error(err));
         // webSocket.current?.send({ command: "/test/client", data: { test: "client test message" } } as WebSocketMessage);
       }} >TEST BUTTON</Button>
+
+      <br></br>
+      isTwitterConnected: {`${isTwitterConnected}`}
+      
+      <br></br>
+      isMetaMaskConnected: {`${isMetaMaskConnected}`}
 
     </div>
   );

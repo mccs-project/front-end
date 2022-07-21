@@ -5,6 +5,7 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 // import { Fetch } from "./lib/Fetch";
 import { Env } from "./lib/Env";
+import { RecoilRoot } from "recoil";
 
 // //  fetchを置き換え
 // window.fetch = Fetch.getOverrideFetch();
@@ -27,7 +28,9 @@ startMockServer.then(()=>{
   );
   root.render(
     // <React.StrictMode>
+    <RecoilRoot>
       <App />
+    </RecoilRoot>
     // </React.StrictMode>
   );
 });
