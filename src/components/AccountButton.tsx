@@ -5,6 +5,7 @@ import { TwitterUsersMeResponseBody } from "../shared/api/interfaces";
 import { LocalApi } from "../lib/RestApi";
 import { TwitterOAuth2 } from "../lib/TwitterOAuth2";
 import { MetaMask } from "../lib/MetaMask";
+import { useIsTwitterConnected, useIsMetaMaskConnected } from "../hooks";
 import LinkIcon from '@mui/icons-material/Link';
 import PersonIcon from '@mui/icons-material/Person';
 import PersonOffIcon from '@mui/icons-material/PersonOff';
@@ -86,6 +87,7 @@ export const TwitterAccountButton: React.FC = () => {
 
     const [me, setMe] = useState<TwitterUsersMeResponseBody|undefined>();
     const [loading, setLoading] = useState(true);
+    const [/*isTwitterConnected*/, setIsTwitterConnected] = useIsTwitterConnected();
 
     useEffect(()=>{
         (async()=>{
@@ -101,7 +103,13 @@ export const TwitterAccountButton: React.FC = () => {
             setLoading(false);
         })();
     }, []);
+    
+    //  meが変更されたタイミングでTwitter接続状態を更新
+    useEffect(()=>{
+        setIsTwitterConnected(Boolean(me));
+    }, [me]);
 
+    //  認可処理を定義
     const authorize = useCallback(async()=>{
         await new TwitterOAuth2().authorize();
     }, []);
@@ -132,6 +140,7 @@ export const MetaMaskAccountButton: React.FC = ()=>{
     const [isMetaMaskInstalled, setIsMetaMaskInstalled] = useState<boolean|undefined>();
     const [account, setAccount] = useState<string>();
     const [displayAccount, setDisplayAccount] = useState<string>();
+    const [/*isMetaMaskConnected*/, setIsMetaMaskConnected] = useIsMetaMaskConnected();
 
     //  MetaMaskを接続する関数
     const connect = useCallback(async()=>{
@@ -139,9 +148,12 @@ export const MetaMaskAccountButton: React.FC = ()=>{
         setAccount(accounts.length > 0 ? accounts[0] : undefined);
     }, []);
 
-    //  アカウントが変更されたら表示用のアカウント文字列(0x123...9876)を更新
+    //  アカウントが変更された時の処理
     useEffect(()=>{
+        //  表示用のアカウント文字列(0x123...9876)を更新
         setDisplayAccount(account ? `${account.slice(0, 5)}...${account.slice(-4)}` : undefined);
+        //  接続状態を更新
+        setIsMetaMaskConnected(Boolean(account));
     }, [account]);
 
     useEffect(()=>{
@@ -150,11 +162,15 @@ export const MetaMaskAccountButton: React.FC = ()=>{
             const installed: boolean = await MetaMask.isInstalled();
             setIsMetaMaskInstalled(installed);
 
+            let connected: boolean = false; //  MetaMask接続状態
             //  MetaMaskがインストールされている場合、接続済みのアカウントを取得
             if(installed) {
                 const accounts: string[] = await MetaMask.accounts();
                 setAccount(accounts.length > 0 ? accounts[0] : undefined);
+                //  アカウントが1つ以上取得できる時はMetaMaskが接続されている状態
+                connected = accounts.length > 0;
             }
+            setIsMetaMaskConnected(connected);
             setLoading(false);
         })();
     }, []);
