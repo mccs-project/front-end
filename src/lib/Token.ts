@@ -1,4 +1,3 @@
-import { ApiPath } from "../shared/api/Path";
 import { TokenResponseBody } from "../shared/api/interfaces";
 import { LocalStorageKeys } from "./LocalStorageKeys";
 import { Env } from "./Env";
