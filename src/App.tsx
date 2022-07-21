@@ -1,13 +1,10 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 // import logo from "./logo.svg";
 import "./App.css";
 
-import TwitterAuthorizationButton from "./components/TwitterAuthorizationButton";
-import { TwitterOAuth2 } from "./lib/TwitterOAuth2";
 import { Token } from "./lib/Token";
 import { Button } from "@mui/material";
 import { WebSocketClient } from "./lib/WebSocketClient";
-import { WebSocketMessage } from "./shared/api/interfaces";
 import { MetaMaskAccountButton, TwitterAccountButton } from "./components/AccountButton";
 
 import { Env } from "./lib/Env";
@@ -35,6 +32,11 @@ function App() {
       }
       
     })();
+
+    //  cleanup
+    return ()=>{
+      webSocket.current?.close();
+    };
   }, []);
  
   const isTwitterConnected: boolean|undefined = useIsTwitterConnectedValue();

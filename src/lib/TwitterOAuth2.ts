@@ -1,6 +1,5 @@
-import { ApiPath } from "../shared/api/Path";
-import { TwitterOAuth2AccessUrlResponseBody, TwitterTokenRequestBody } from "../shared/api/interfaces";
-import { myFetch } from "./Fetch";
+import { TwitterOAuth2AccessUrlResponseBody } from "../shared/api/interfaces";
+import { LocalApi } from "./RestApi";
 
 /**
  * TwitterのOAuth2.0認証を行うためのクラス
@@ -35,11 +34,8 @@ export class TwitterOAuth2 {
         if(code === null) { throw new Error("{C18D2F96-E0BC-48DE-82F1-C1DC0BB1FBA9}"); }    //  fail safe
         if(state === null) { throw new Error("{344570DB-BF1C-449C-AA74-A3841A12051F}"); }    //  fail safe
 
-        const body: TwitterTokenRequestBody = { code, state };
-        const response = await myFetch(ApiPath.TWITTER_OAUTH2_TOKEN, {
-            method: "POST",
-            body: JSON.stringify(body),
-        })
+        //  ローカルサーバーへ送信
+        await LocalApi.postTwitterOAuth2Token({ code, state });
 
         //  現在のURLをルートに戻す
         window.history.replaceState(null, "", "/");
@@ -51,11 +47,9 @@ export class TwitterOAuth2 {
     public async authorize(): Promise<void> {
 
         //  認可ページのURLを取得
-        const response = await myFetch(ApiPath.TWITTER_OAUTH2_ACCESS_URL);
-        const body: TwitterOAuth2AccessUrlResponseBody = await response.json();
-        const url: string = body.url;
+        const resonseBody: TwitterOAuth2AccessUrlResponseBody = await LocalApi.getTwitterOAuth2AccessUrl();
 
         // //  認可画面に遷移
-        window.location.href = url;
+        window.location.href = resonseBody.url;
     }
 }

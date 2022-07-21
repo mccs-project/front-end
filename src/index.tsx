@@ -1,14 +1,9 @@
-import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
-// import { Fetch } from "./lib/Fetch";
 import { Env } from "./lib/Env";
 import { RecoilRoot } from "recoil";
-
-// //  fetchを置き換え
-// window.fetch = Fetch.getOverrideFetch();
 
 
 // //  起動オプションが有効な時、MockServerを起動する

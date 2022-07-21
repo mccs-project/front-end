@@ -1,4 +1,4 @@
-import { Button, CircularProgress, createTheme, IconButton, ListItemIcon, MenuItem, MenuList, Popover, ThemeProvider } from "@mui/material";
+import { Button, createTheme, IconButton, ListItemIcon, MenuItem, MenuList, Popover, ThemeProvider } from "@mui/material";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { LoadingIcon, MetaMaskIcon, TwitterMeIcon } from "./icons";
 import { TwitterUsersMeResponseBody } from "../shared/api/interfaces";
