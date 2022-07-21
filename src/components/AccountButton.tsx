@@ -32,21 +32,21 @@ const accountButtonTheme = createTheme({
   });
 
 export const AccountButton: React.FC<AccountButtonProps> = ({ children, icon, text }: AccountButtonProps) => {
-    const [anchorEl, setAnchorEl] = useState<HTMLDivElement | null>(null);
-    const anchorRef = useRef<HTMLDivElement | null>(null);
+    const [anchorElement, setAnchorElement] = useState<HTMLDivElement | null>(null);
+    const iconElementRef = useRef<HTMLDivElement | null>(null);
 
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-        setAnchorEl(anchorRef?.current);
+        setAnchorElement(iconElementRef?.current);
     };
 
     const handleClose = () => {
-        setAnchorEl(null);
+        setAnchorElement(null);
     };
-    const open = Boolean(anchorEl);
+    const open = Boolean(anchorElement);
 
     return (
         <>
-            <span ref={anchorRef} className={"account-button"}>
+            <span ref={iconElementRef} className={"account-button"}>
             {
                 //  テキストありの場合はButton
                 text ? <ThemeProvider theme={accountButtonTheme}>
@@ -62,7 +62,7 @@ export const AccountButton: React.FC<AccountButtonProps> = ({ children, icon, te
                 children && 
                 <Popover
                     open={open}
-                    anchorEl={anchorEl}
+                    anchorEl={anchorElement}
                     onClose={handleClose}
                     anchorOrigin={{
                         vertical: "bottom",
