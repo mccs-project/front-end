@@ -72,6 +72,7 @@ export const MetaMaskIcon: React.FC<MetaMaskIconProps> = ({ fontSize }: MetaMask
 export const TwitterMeIcon: React.FC<TwitterMeIconProps> = ({ me, fontSize }: TwitterMeIconProps) => {
     return (me 
         ? <ImageIcon src={`${me.profile_image_url}`} alt={me.name} fontSize={fontSize} trimToCircle={true} />
-        : <TwitterIcon sx={{color:"#55acee"}} fontSize={fontSize} />
+        // : <TwitterIcon sx={{color:"#55acee"}} fontSize={fontSize} />
+        : <TwitterIcon fontSize={fontSize} />
     );
 };

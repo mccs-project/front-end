@@ -43,8 +43,8 @@ function App() {
         {/* <img src={logo} className="App-logo" alt="logo" /> */}
       </header>
       
-      <TwitterAccountButton />
       <MetaMaskAccountButton />
+      <TwitterAccountButton />
       <Button onClick={()=>{
         // fetch("/api/twitter/users/me",).then(async res=>{ console.log(await res.text()); } ).catch(err=>console.error(err));
         // webSocket.current?.send({ command: "/test/client", data: { test: "client test message" } } as WebSocketMessage);
