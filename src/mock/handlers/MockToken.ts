@@ -10,7 +10,6 @@ export class MockToken {
     public getResponse(req: RestRequest): TokenResponseBody {
         const auth = req.headers.get("Authorization");
         const token = auth?.replace("Bearer ", "").trim();
-        console.log(`MockToken::getResponse() token: ${token}`);
 
         //  以下のいずれかの場合、新しいトークンを生成して返す
         //    ・Authorizationヘッダがない

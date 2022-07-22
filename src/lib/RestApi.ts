@@ -1,4 +1,4 @@
-import { TokenResponseBody, TwitterOAuth2AccessUrlResponseBody, TwitterTokenRequestBody, TwitterUsersMeResponseBody } from "../shared/api/interfaces";
+import { HallsRequestBody, HallsResponseBody, TokenResponseBody, TwitterOAuth2AccessUrlResponseBody, TwitterTokenRequestBody, TwitterUsersMeResponseBody } from "../shared/api/interfaces";
 import { ApiPath } from "../shared/api/Path";
 import { Env } from "./Env";
 import { Token } from "./Token";
@@ -85,5 +85,16 @@ export class LocalApi {
     public static async getTwitterOAuth2AccessUrl(): Promise<TwitterOAuth2AccessUrlResponseBody> {
         const response = await myFetch(ApiPath.TWITTER_OAUTH2_ACCESS_URL);
         return await response.json();
+    }
+
+    public static async getEldoradoHalls(requestBody: HallsRequestBody): Promise<HallsResponseBody> {
+        const response = await myFetch(ApiPath.ELDORADO_HALLS, { method: "POST", body: JSON.stringify(requestBody) });
+        return response.json();
+    }
+
+    /** 各ホールの最新情報を取得します。 */
+    public static async getEldoradoLatestHalls(): Promise<HallsResponseBody> {
+        const response = await myFetch(ApiPath.ELDORADO_LATEST_HALLS);
+        return response.json();
     }
 }
