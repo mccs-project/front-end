@@ -107,9 +107,11 @@ export const MainLayout: React.FC<MccsBarProps> = ({ title, children }) => {
                 </Toolbar>
             </AppBar>
 
-            <Container sx={{ marginTop: `${toolbarHeight}px` /* Toolbarの高さと合わせる */ }}>
+            <Box sx={{ height: "100%", paddingTop:`${toolbarHeight}px`, backgroundColor: "#FCFCFC", boxSizing: "border-box"}}>
+            <Box sx={{ height: "100%", padding: 1, boxSizing: "border-box"}}>
                 {children}
-            </Container>
+            </Box>
+            </Box>  
         </>
     );
 }

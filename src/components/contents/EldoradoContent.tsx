@@ -1,11 +1,10 @@
-import { ButtonBase, Card, CardActionArea, CardContent, CardMedia, Grid, Typography } from "@mui/material";
+import { Box, Card, CardActionArea, CardContent, Grid, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Eldorado } from "../../lib/Eldorado";
 import { Util } from "../../lib/Util";
 import { HallsResponseBody } from "../../shared/api/interfaces";
-import { ApiPath } from "../../shared/api/Path";
-
+import PersonIcon from '@mui/icons-material/Person';
 
 type HallCardProps = {
     hallName: string;
@@ -67,8 +66,75 @@ const SelectHall: React.FC = ()=>{
     );
 };
 
-export const EldoradoContent: React.FC = () => {
+
+type FloorMachineCardProps = {
+    no: number;
+    onClick?: React.MouseEventHandler<HTMLButtonElement>;
+};
+const FloorMachineCard: React.FC<FloorMachineCardProps> = ({no, onClick}) =>{
+
     return (
-        <SelectHall />
+        <CardActionArea onClick={onClick} sx={{height: "100%"}}>
+        <Card sx={{minWidth: 55, minHeight: 75, padding: 1}}>
+            <Box sx={{ display: "flex", alignItems: "flex-end"}}>
+                <Box>{no}番</Box>
+                <Box component={"span"} sx={{ display:"inline-block", width: "auto", textAlign: "left"}}></Box>
+                <PersonIcon fontSize="small" />
+            </Box>
+            
+            <Typography variant="body2">BB: 1</Typography>
+            <Typography variant="body2">RB: 1</Typography>
+
+            {/* <CardContent> */}
+            {/* <Typography variant="subtitle1">{no}</Typography> */}
+            {/* </CardContent> */}
+        </Card>
+            </CardActionArea>
+    );
+}
+
+/** フロア画面のようなレイアウト。マシンをクリックすることで詳細を確認できる */
+const EldoradoFloor: React.FC = () => {
+
+    return <div></div>
+};
+
+
+export const EldoradoContent: React.FC = () => {
+
+    //  1から40の配列を作る
+    const machineNoTmp = [...Array(40)].map((_,i)=>i+1);
+    //  島（1列8台）ずつに分割
+    let linesTmp = machineNoTmp.reduce((p,c)=>{
+        p[Math.floor((c-1) / 8)].push(c);
+        return p;
+    }, [[],[],[],[],[]] as number[][]);
+    //  島の一番右が1となるように配列を逆順に変換
+    linesTmp = linesTmp.map(line=>line.reverse());
+    console.log(JSON.stringify(linesTmp));
+    
+    return (
+        // <SelectHall />
+        <Grid container spacing={1} sx={{height: "100%"}}>
+            {/* マシンを並べる領域 */}
+            <Grid item xs={8}>
+            <Grid container spacing={1}>
+            {
+                linesTmp.map(line=>{
+                    return <Grid item xs={12}><Grid container spacing={1} >
+                        {line.map(m=>{
+                            return <Grid item xs><FloorMachineCard no={m}/></Grid>;
+                        })}
+                    </Grid></Grid>
+                })
+                // <Grid item xs sx={{width: "25%"}}><FloorMachineCard no={1}/></Grid>
+            }
+            </Grid>
+            </Grid>
+            {/* 詳細情報を表示する領域 */}
+            <Grid item xs={4} sx={{height: "100%"}}>
+                <Card sx={{width: "100%", height: "100%"}}>あああ</Card>
+            </Grid>
+        </Grid>
     );
 };

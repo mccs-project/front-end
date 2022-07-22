@@ -37,13 +37,13 @@ function App() {
 
   return (
     <BrowserRouter>
-      <MainLayout title="MCCS"/>
-      
-      <Routes>
-        <Route path={`/`} element={<DashboardContent />} />
-        <Route path={`/eldorado`} element={<EldoradoContent />} />
-        <Route path={`/shop`} element={<ShopContent />} />
-      </Routes>
+      <MainLayout title="MCCS">
+        <Routes>
+          <Route path={`/`} element={<DashboardContent />} />
+          <Route path={`/eldorado`} element={<EldoradoContent />} />
+          <Route path={`/shop`} element={<ShopContent />} />
+        </Routes>
+      </MainLayout>
     </BrowserRouter>
   );
 }
