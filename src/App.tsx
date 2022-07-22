@@ -13,13 +13,9 @@ import { DashboardContent, EldoradoContent, ShopContent } from "./components/con
 
 function App() {
 
-  const initialize = useRef(false);
   const webSocket = useRef<WebSocketClient|undefined>();
   useEffect(()=>{
     (async()=>{
-      //  NODE_ENVがdevelopmentの場合2回呼ばれるので1回しか処理をしないようにする
-      if(initialize.current === true) { return; }
-      else { initialize.current = true; }
 
       //  ローカルサーバーのAPIアクセスで利用するトークンを更新
       new Token().refresh();
