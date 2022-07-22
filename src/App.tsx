@@ -2,25 +2,20 @@ import React, { useEffect, useRef } from "react";
 // import logo from "./logo.svg";
 import "./App.css";
 
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Token } from "./lib/Token";
-import { Button } from "@mui/material";
 import { WebSocketClient } from "./lib/WebSocketClient";
-import { MetaMaskAccountButton, TwitterAccountButton } from "./components/AccountButton";
 
 import { Env } from "./lib/Env";
-import { useIsMetaMaskConnectedValue, useIsTwitterConnectedValue } from "./hooks";
-
+import { MainLayout } from "./components/MainLayout";
+import { DashboardContent, EldoradoContent, ShopContent } from "./components/contents";
 
 
 function App() {
 
-  const initialize = useRef(false);
   const webSocket = useRef<WebSocketClient|undefined>();
   useEffect(()=>{
     (async()=>{
-      //  NODE_ENVがdevelopmentの場合2回呼ばれるので1回しか処理をしないようにする
-      if(initialize.current === true) { return; }
-      else { initialize.current = true; }
 
       //  ローカルサーバーのAPIアクセスで利用するトークンを更新
       new Token().refresh();
@@ -38,30 +33,18 @@ function App() {
       webSocket.current?.close();
     };
   }, []);
- 
-  const isTwitterConnected: boolean|undefined = useIsTwitterConnectedValue();
-  const isMetaMaskConnected: boolean|undefined = useIsMetaMaskConnectedValue();
+
 
   return (
-    <div className="App">
-      <header className="App-header">
-        {/* <img src={logo} className="App-logo" alt="logo" /> */}
-      </header>
+    <BrowserRouter>
+      <MainLayout title="MCCS"/>
       
-      <MetaMaskAccountButton />
-      <TwitterAccountButton />
-      <Button onClick={()=>{
-        // fetch("/api/twitter/users/me",).then(async res=>{ console.log(await res.text()); } ).catch(err=>console.error(err));
-        // webSocket.current?.send({ command: "/test/client", data: { test: "client test message" } } as WebSocketMessage);
-      }} >TEST BUTTON</Button>
-
-      <br></br>
-      isTwitterConnected: {`${isTwitterConnected}`}
-      
-      <br></br>
-      isMetaMaskConnected: {`${isMetaMaskConnected}`}
-
-    </div>
+      <Routes>
+        <Route path={`/`} element={<DashboardContent />} />
+        <Route path={`/eldorado`} element={<EldoradoContent />} />
+        <Route path={`/shop`} element={<ShopContent />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 

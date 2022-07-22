@@ -50,7 +50,7 @@ export const AccountButton: React.FC<AccountButtonProps> = ({ children, icon, te
             {
                 //  テキストありの場合はButton
                 text ? <ThemeProvider theme={accountButtonTheme}>
-                    <Button onClick={handleClick} startIcon={icon} variant="outlined">{text}</Button>
+                    <Button onClick={handleClick} startIcon={icon} variant='outlined' color="inherit">{text}</Button>
                 </ThemeProvider>
                 //  テキスト無しの場合はIconButtton
                 : <IconButton onClick={handleClick}>
@@ -73,7 +73,6 @@ export const AccountButton: React.FC<AccountButtonProps> = ({ children, icon, te
                         horizontal: "right"
                     }}
                     onClick={handleClose}
-                    style={{marginTop: 10}}
                 >
                     {children}
                 </Popover>
