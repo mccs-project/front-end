@@ -8,6 +8,7 @@ import { WebSocketClient } from "./lib/WebSocketClient";
 
 import { Env } from "./lib/Env";
 import { MainLayout } from "./components/MainLayout";
+import { DashboardContent, EldoradoContent, ShopContent } from "./components/contents";
 
 
 function App() {
@@ -40,10 +41,12 @@ function App() {
 
   return (
     <BrowserRouter>
-    <MainLayout title="MCCS"/>
+      <MainLayout title="MCCS"/>
+      
       <Routes>
-        <Route path={`/`} element={<div>Hoge</div>} />
-        <Route path={`/eldorado`} element={<div>Eldorado</div>} />
+        <Route path={`/`} element={<DashboardContent />} />
+        <Route path={`/eldorado`} element={<EldoradoContent />} />
+        <Route path={`/shop`} element={<ShopContent />} />
       </Routes>
     </BrowserRouter>
   );
