@@ -14,6 +14,7 @@ const getResponse = async<T extends RestRequest>(req: T, res: ResponseCompositio
             case ApiPath.TWITTER_GET_USERS_ME: return new MockTwitter().getUsersMe();
             case ApiPath.ELDORADO_HALLS: return MockEldorado.getHalls(req);
             case ApiPath.ELDORADO_LATEST_HALLS: return MockEldorado.getLatestHalls();
+            case ApiPath.ELDORADO_MACHINE_LIST: return MockEldorado.getMachineList(req);
 
             default: throw new Error("{88CC17F3-0674-41E3-BE53-3DF7BD448E68}");
         }

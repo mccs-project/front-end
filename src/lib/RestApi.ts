@@ -1,4 +1,4 @@
-import { HallsRequestBody, HallsResponseBody, TokenResponseBody, TwitterOAuth2AccessUrlResponseBody, TwitterTokenRequestBody, TwitterUsersMeResponseBody } from "../shared/api/interfaces";
+import { HallsRequestBody, HallsResponseBody, MachineListRequestBody, MachineListResponseBody, TokenResponseBody, TwitterOAuth2AccessUrlResponseBody, TwitterTokenRequestBody, TwitterUsersMeResponseBody } from "../shared/api/interfaces";
 import { ApiPath } from "../shared/api/Path";
 import { Env } from "./Env";
 import { Token } from "./Token";
@@ -67,10 +67,10 @@ export class LocalApi {
         return await response.json();
     }
 
-    public static async postTwitterOAuth2Token(postData: TwitterTokenRequestBody){
+    public static async postTwitterOAuth2Token(requestBody: TwitterTokenRequestBody){
         const response = await myFetch(ApiPath.TWITTER_OAUTH2_TOKEN, {
             method: "POST",
-            body: JSON.stringify(postData),
+            body: JSON.stringify(requestBody),
         })
 
         //  一旦応答のステータスが正常でない場合に例外を投げておく
@@ -95,6 +95,11 @@ export class LocalApi {
     /** 各ホールの最新情報を取得します。 */
     public static async getEldoradoLatestHalls(): Promise<HallsResponseBody> {
         const response = await myFetch(ApiPath.ELDORADO_LATEST_HALLS);
+        return response.json();
+    }
+
+    public static async getMachineList(requestBody: MachineListRequestBody): Promise<MachineListResponseBody> {
+        const response = await myFetch(ApiPath.ELDORADO_MACHINE_LIST, { method: "POST", body: JSON.stringify(requestBody) });
         return response.json();
     }
 }

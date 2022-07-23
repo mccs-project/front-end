@@ -1,9 +1,9 @@
 import { Box, Card, CardActionArea, CardContent, Grid, Typography } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Eldorado } from "../../lib/Eldorado";
 import { Util } from "../../lib/Util";
-import { HallsResponseBody } from "../../shared/api/interfaces";
+import { HallsResponseBody, MachineListResponseBody } from "../../shared/api/interfaces";
 import PersonIcon from '@mui/icons-material/Person';
 
 type HallCardProps = {
@@ -69,17 +69,18 @@ const SelectHall: React.FC = ()=>{
 
 type FloorMachineCardProps = {
     no: number;
+    userId: number;
     onClick?: React.MouseEventHandler<HTMLButtonElement>;
 };
-const FloorMachineCard: React.FC<FloorMachineCardProps> = ({no, onClick}) =>{
+const FloorMachineCard: React.FC<FloorMachineCardProps> = ({no, userId, onClick}) =>{
 
     return (
         <CardActionArea onClick={onClick} sx={{height: "100%"}}>
         <Card sx={{minWidth: 55, minHeight: 75, padding: 1}}>
             <Box sx={{ display: "flex", alignItems: "flex-end"}}>
                 <Box>{no}番</Box>
-                <Box component={"span"} sx={{ display:"inline-block", width: "auto", textAlign: "left"}}></Box>
-                <PersonIcon fontSize="small" />
+                {/* <Box component={"span"} sx={{ display:"inline-block", width: "auto", textAlign: "left"}}></Box> */}
+                {userId > 0 ? <PersonIcon fontSize="small" /> : <></>}
             </Box>
             
             <Typography variant="body2">BB: 1</Typography>
@@ -102,28 +103,49 @@ const EldoradoFloor: React.FC = () => {
 
 export const EldoradoContent: React.FC = () => {
 
-    //  1から40の配列を作る
-    const machineNoTmp = [...Array(40)].map((_,i)=>i+1);
-    //  島（1列8台）ずつに分割
-    let linesTmp = machineNoTmp.reduce((p,c)=>{
-        p[Math.floor((c-1) / 8)].push(c);
-        return p;
-    }, [[],[],[],[],[]] as number[][]);
-    //  島の一番右が1となるように配列を逆順に変換
-    linesTmp = linesTmp.map(line=>line.reverse());
-    console.log(JSON.stringify(linesTmp));
+    const [machineListResponse, setMachineListResponse] = useState<MachineListResponseBody|undefined>();
+
+    useEffect(()=>{
+        (async()=>{
+            const machineListTmp = await Eldorado.getMachineList("e01a7c26-5377-406d-b0ab-bbe7fa14fd82");
+            //  machinesをmachine_noの昇順にソートした状態で格納
+            machineListTmp.machines.sort((a,b)=>{ return a.machine_no - b.machine_no});
+            setMachineListResponse(machineListTmp);
+        })();
+    }, []);
+
+    //  画面で表示される形の台番号の2次元配列
+    //      [[8,7,6,5,4,3,2,1][16,15,...10,9]...[40,39,...34,33]]
+    const machineNoListForDisplay = useMemo(()=>{
+        //  1から40の配列を作る
+        const machineNoTmp = [...Array(40)].map((_,i)=>i+1);
+        //  島（1列8台）ずつに分割
+        let linesTmp = machineNoTmp.reduce((p,c)=>{
+            p[Math.floor((c-1) / 8)].push(c);
+            return p;
+        }, [[],[],[],[],[]] as number[][]);
+        //  島の一番右が1となるように配列を逆順に変換
+        return linesTmp.map(line=>line.reverse());
+    }, []);
     
     return (
         // <SelectHall />
         <Grid container spacing={1} sx={{height: "100%"}}>
             {/* マシンを並べる領域 */}
-            <Grid item xs={8}>
+            <Grid item xs={8} key={"{E2248DE7-A6FA-48C6-9D4D-70868E056597}"}>
             <Grid container spacing={1}>
             {
-                linesTmp.map(line=>{
-                    return <Grid item xs={12}><Grid container spacing={1} >
-                        {line.map(m=>{
-                            return <Grid item xs><FloorMachineCard no={m}/></Grid>;
+                machineListResponse && machineNoListForDisplay.map((line, i)=>{
+                    return <Grid item xs={12} key={`{F905F226-285B-4736-A6B6-205FEFA0B8BA}-${i}`}><Grid container spacing={1} >
+                        {line.map(no=>{
+                            const machine = machineListResponse.machines[no-1];  //  昇順に格納しているので、no-1がindex
+                            const machineCardProps: FloorMachineCardProps = {
+                                no: no,
+                                userId: machine.usr_id
+                            }
+                            return <Grid item xs key={machine.machine_uuid}>
+                                <FloorMachineCard {...machineCardProps}/>
+                            </Grid>;
                         })}
                     </Grid></Grid>
                 })
@@ -132,7 +154,7 @@ export const EldoradoContent: React.FC = () => {
             </Grid>
             </Grid>
             {/* 詳細情報を表示する領域 */}
-            <Grid item xs={4} sx={{height: "100%"}}>
+            <Grid item xs={4} sx={{height: "100%"}} key={"{20A6C754-196B-458C-B337-A774E8E8181C}"}>
                 <Card sx={{width: "100%", height: "100%"}}>あああ</Card>
             </Grid>
         </Grid>
