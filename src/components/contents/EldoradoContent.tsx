@@ -69,42 +69,23 @@ const SelectHall: React.FC = ()=>{
 
 
 type FloorMachineCardProps = {
-    machineType: MachineType;
+    children?: React.ReactNode;
     no: number;
     userId: number;
-    totalSpinCount?: number; //  総回転数
-    medalOrBall?: number;    //  差枚（差玉）
     onClick?: React.MouseEventHandler<HTMLButtonElement>;
 };
-const FloorMachineCard: React.FC<FloorMachineCardProps> = ({machineType, no, userId, totalSpinCount, medalOrBall, onClick}) =>{
 
-    const medalOrBallUnitText: string = ((machineType) => {
-        switch(machineType) {
-            case MachineType.SLOT: return "枚";
-            case MachineType.PACHINKO: return "玉";
-            default: throw new Error("{A092BA60-0F43-4012-A05D-4AC0AC381ED9}");
-        }
-    })(machineType);
-
+/** フロアのレイアウトで並べる時のカード */
+const FloorMachineCard: React.FC<FloorMachineCardProps> = ({children, no, userId, onClick}) =>{
     return (
         <CardActionArea onClick={onClick} sx={{height: "100%"}}>
         <Card sx={{minWidth: 55,  padding: 1}}>
             <Box sx={{ display: "flex", alignItems: "flex-end"}}>
                 <Box>{no}番</Box>
-                {/* <Box component={"span"} sx={{ display:"inline-block", width: "auto", textAlign: "left"}}></Box> */}
                 {userId > 0 ? <PersonIcon fontSize="small" sx={{ position: "absolute", right: "8px" }}/> : <></>}
             </Box>
-            <Divider sx={{marginY: 0.5}}></Divider>
-            <Typography variant="body2">
-                
-            </Typography>
-            <Typography variant="body2"></Typography>
-            <Box sx={{textAlign: "right", whiteSpace: "nowrap"}}>{totalSpinCount ?? "-"} 回転</Box>
-            <Box sx={{ textAlign: "right", color: (medalOrBall && medalOrBall < 0) ? "red": "inherit"} }>{medalOrBall ?? "-"} {medalOrBallUnitText}</Box>
+            { children && <><Divider sx={{marginY: 0.5}} />{children}</> }
 
-            {/* <CardContent> */}
-            {/* <Typography variant="subtitle1">{no}</Typography> */}
-            {/* </CardContent> */}
         </Card>
             </CardActionArea>
     );
@@ -155,14 +136,23 @@ export const EldoradoContent: React.FC = () => {
                         {line.map(no=>{
                             const machine = machineListResponse.machines[no-1];  //  昇順に格納しているので、no-1がindex
                             const machineCardProps: FloorMachineCardProps = {
-                                machineType: machineListResponse.machine_type,
                                 no: no,
                                 userId: machine.usr_id,
-                                totalSpinCount: machine.slot_detail?.total_spin_count ?? machine.pachinko_detail?.total_spin_count ?? undefined,
-                                medalOrBall: machine.slot_detail?.medal ?? machine.pachinko_detail?.ball ?? undefined
                             }
+                            const totalSpinCount: number|undefined = machine.slot_detail?.total_spin_count ?? machine.pachinko_detail?.total_spin_count ?? undefined;
+                            const medalOrBall: number|undefined = machine.slot_detail?.medal ?? machine.pachinko_detail?.ball ?? undefined;
+                            const medalOrBallUnitText: string = ((machineType) => {
+                                switch(machineType) {
+                                    case MachineType.SLOT: return "枚";
+                                    case MachineType.PACHINKO: return "玉";
+                                    default: throw new Error("{A092BA60-0F43-4012-A05D-4AC0AC381ED9}");
+                                }
+                            })(machineListResponse.machine_type);
                             return <Grid item xs key={machine.machine_uuid}>
-                                <FloorMachineCard {...machineCardProps}/>
+                                <FloorMachineCard {...machineCardProps}>
+                                    <Box sx={{textAlign: "right", whiteSpace: "nowrap"}}>{totalSpinCount ?? "-"} 回転</Box>
+                                    <Box sx={{ textAlign: "right", color: (medalOrBall && medalOrBall < 0) ? "red": "inherit"} }>{medalOrBall ?? "-"} {medalOrBallUnitText}</Box>
+                                </FloorMachineCard>
                             </Grid>;
                         })}
                     </Grid></Grid>
@@ -173,7 +163,7 @@ export const EldoradoContent: React.FC = () => {
             {/* 詳細情報を表示する領域 */}
             {/* 画面サイズがlg(1200px)未満の時は最大幅で縦に並べる */}
             <Grid item xs={12} lg={4} sx={{height: "100%"}} key={"{20A6C754-196B-458C-B337-A774E8E8181C}"}>
-                <Card sx={{width: "100%", height: "100%"}}>あああ</Card>
+            <Card sx={{width: "100%", height: "100%", padding: 1, boxSizing: "border-box"}}>[TODO: 詳細をここに表示]</Card>
             </Grid>
         </Grid>
     );

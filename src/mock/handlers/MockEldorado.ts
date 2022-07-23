@@ -1,27 +1,26 @@
 import { RestRequest } from "msw";
 import { HallsRequestBody, HallsResponseBody, MachineListRequestBody, MachineListResponseBody } from "../../shared/api/interfaces";
 
-// import halls from "./hoge.json";
-const halls: HallsResponseBody["halls"] = require("./hoge.json");
+// const halls: HallsResponseBody["halls"] = require("./hoge.json");
 
-// const halls: HallsResponseBody["halls"] = [
-//     {
-//         hall_id: 100100002,
-//         hall_uuid: "0eef873d-6beb-4735-99a3-5909bdc521b6",
-//         open_time: 1658451600,
-//         close_time: 1658494800,
-//         open_day: 20220722,
-//         hall_name: "ELDORADO WEST",
-//     },
-//     {
-//         hall_id: 100100003,
-//         hall_uuid: "e8a3d990-9b27-43aa-8e09-d2c7dce92c35",
-//         open_time: 1658322000,
-//         close_time: 1658361600,
-//         open_day: 20220720,
-//         hall_name: "ELDORADO EAST",
-//     },
-// ];
+const halls: HallsResponseBody["halls"] = [
+    {
+        hall_id: 100100002,
+        hall_uuid: "0eef873d-6beb-4735-99a3-5909bdc521b6",
+        open_time: 1658451600,
+        close_time: 1658494800,
+        open_day: 20220722,
+        hall_name: "ELDORADO WEST",
+    },
+    {
+        hall_id: 100100003,
+        hall_uuid: "e8a3d990-9b27-43aa-8e09-d2c7dce92c35",
+        open_time: 1658322000,
+        close_time: 1658361600,
+        open_day: 20220720,
+        hall_name: "ELDORADO EAST",
+    },
+];
 
 // const machineList: MachineListResponseBody = {
 
