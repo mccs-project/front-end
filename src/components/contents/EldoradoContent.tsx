@@ -1,4 +1,4 @@
-import { Box, Card, CardActionArea, CardContent, Divider, Grid, Typography } from "@mui/material";
+import { Box, Card, CardActionArea, CardContent, Divider, FormControl, Grid, MenuItem, NativeSelect, Select, Typography } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Eldorado } from "../../lib/Eldorado";
@@ -100,16 +100,26 @@ const EldoradoFloor: React.FC = () => {
 
 export const EldoradoContent: React.FC = () => {
 
+    const [hallsResponse, setHallsResponse] = useState<HallsResponseBody|undefined>();
+    const [selectedHallId, setSelectedHallId] = useState<number|undefined>();   //  Selectコンポーネントで選択されているホールID
     const [machineListResponse, setMachineListResponse] = useState<MachineListResponseBody|undefined>();
 
-    useEffect(()=>{
-        (async()=>{
-            const machineListTmp = await Eldorado.getMachineList("e01a7c26-5377-406d-b0ab-bbe7fa14fd82");
-            //  machinesをmachine_noの昇順にソートした状態で格納
-            machineListTmp.machines.sort((a,b)=>{ return a.machine_no - b.machine_no});
-            setMachineListResponse(machineListTmp);
-        })();
-    }, []);
+    useEffect(()=>{(async()=>{
+        //  過去1日分取得
+        const now = new Date();
+        let hallsTmp = await Eldorado.getHalls(new Date(now.getFullYear(), now.getMonth(), now.getDate() -1, now.getHours(), now.getMinutes()));
+        //  開店時間の降順でソート
+        hallsTmp.halls.sort((a,b)=>b.open_time - a.open_time);
+        setHallsResponse(hallsTmp);
+        setSelectedHallId(hallsTmp.halls[0].hall_id);
+    })();}, []);
+
+    useEffect(()=>{(async()=>{
+        const machineListTmp = await Eldorado.getMachineList("e01a7c26-5377-406d-b0ab-bbe7fa14fd82");
+        //  machinesをmachine_noの昇順にソートした状態で格納
+        machineListTmp.machines.sort((a,b)=>a.machine_no - b.machine_no);
+        setMachineListResponse(machineListTmp);
+    })();}, []);
 
     //  画面で表示される形の台番号の2次元配列
     //      [[8,7,6,5,4,3,2,1][16,15,...10,9]...[40,39,...34,33]]
@@ -127,9 +137,22 @@ export const EldoradoContent: React.FC = () => {
     
     return (
         <Grid container spacing={1} sx={{height: "100%", minWidth: "720px"}}>
+            
             {/* マシンを並べる領域 */}
             <Grid item xs={12} lg={8} key={"{E2248DE7-A6FA-48C6-9D4D-70868E056597}"}>
             <Grid container spacing={1}>
+                
+                <Grid item xs={12} lg={8} key={"{F24A5520-3689-4101-B039-F4D7FE2D2FAF}"}>
+                <FormControl sx={{ m: 1, minWidth: "200px" }} size="small">
+                    <Select sx={{}} value={selectedHallId ?? ""}>
+                        {
+                            hallsResponse && hallsResponse.halls.map(h=>{
+                                return <MenuItem value={h.hall_id} key={`${h.hall_id}`}>{h.hall_name}</MenuItem>
+                            })
+                        }
+                    </Select>
+                </FormControl>
+                </Grid>
             {
                 machineListResponse && machineNoListForDisplay.map((line, i)=>{
                     return <Grid item xs={12} key={`{F905F226-285B-4736-A6B6-205FEFA0B8BA}-${i}`}><Grid container spacing={1} >
