@@ -165,25 +165,27 @@ export const EldoradoContent: React.FC = () => {
         setSelectedFloorUuid(event.target.value);
     };
 
-    const hallItems = () => {
+    const hallItems = useMemo(() => {
         if(hallsResponse === undefined) { return undefined; }
         //  重複無しのホールIDでMenuItemの配列を作成
         return Array.from(new Set(hallsResponse.halls.map(h=>h.hall_id))).map(hallId=>{
             return <MenuItem value={hallId} key={`${hallId}`}>{hallsResponse.halls.find(h=>h.hall_id === hallId)!.hall_name}</MenuItem>;
         });
-    };
-    const dateItems = () => {
+    }, [hallsResponse]);
+
+    const dateItems = useMemo(() => {
         return hallsResponse && hallsResponse.halls.filter(h=>h.hall_id === selectedHallId).map(h=>{
             return <MenuItem value={h.hall_uuid} key={`${h.hall_uuid}`}>{format(Util.toDate(h.open_time), "MM/dd")}</MenuItem>
         });
-    };
-    const floorItems = () => {
+    }, [hallsResponse, selectedHallId]);
+    
+    const floorItems = useMemo(() => {
         return floorsResponse && floorsResponse.floors.map(f=>{
             return <MenuItem value={f.floor_uuid} key={`${f.floor_uuid}`}>
                 {`${f.floor_no}F `}
             </MenuItem>
         });
-    };
+    }, [floorsResponse]);
     
     return (
         <Grid container spacing={1} sx={{height: "100%", minWidth: "720px"}}>
@@ -196,19 +198,19 @@ export const EldoradoContent: React.FC = () => {
                     {/* ホール選択 */}
                     <FormControl sx={{ m: 1, minWidth: "200px" }} size="small">
                         <Select value={selectedHallId ? `${selectedHallId}`: ""} onChange={hallChange}>
-                            { hallItems() }
+                            { hallItems }
                         </Select>
                     </FormControl>
                     {/* 日付選択 */}
                     <FormControl sx={{ m: 1, minWidth: "100px" }} size="small">
                         <Select value={selectedHallUuid ?? ""} onChange={dateChange}>
-                            { dateItems() }
+                            { dateItems }
                         </Select>
                     </FormControl>
                     {/* フロア選択 */}
                     <FormControl sx={{ m: 1, minWidth: "100px" }} size="small">
                         <Select value={selectedFloorUuid ?? ""} onChange={floorChange}>
-                            { floorItems() }
+                            { floorItems }
                         </Select>
                     </FormControl>
 
