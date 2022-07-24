@@ -1,11 +1,12 @@
-import { Box, Card, CardActionArea, CardContent, Divider, FormControl, Grid, MenuItem, NativeSelect, Select, Typography } from "@mui/material";
-import { useEffect, useMemo, useState } from "react";
+import { Box, Card, CardActionArea, CardContent, Divider, FormControl, Grid, MenuItem, NativeSelect, Select, SelectChangeEvent, Typography } from "@mui/material";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Eldorado } from "../../lib/Eldorado";
 import { Util } from "../../lib/Util";
-import { HallsResponseBody, MachineListResponseBody } from "../../shared/api/interfaces";
+import { HallFloorsResponseBody, HallsResponseBody, MachineListResponseBody } from "../../shared/api/interfaces";
 import PersonIcon from '@mui/icons-material/Person';
 import { MachineType } from "../../shared/enum/Eldorado";
+import { format } from "date-fns";
 
 type HallCardProps = {
     hallName: string;
@@ -101,8 +102,12 @@ const EldoradoFloor: React.FC = () => {
 export const EldoradoContent: React.FC = () => {
 
     const [hallsResponse, setHallsResponse] = useState<HallsResponseBody|undefined>();
-    const [selectedHallId, setSelectedHallId] = useState<number|undefined>();   //  Selectコンポーネントで選択されているホールID
+    const [floorsResponse, setFloorsResponse] = useState<HallFloorsResponseBody|undefined>();
     const [machineListResponse, setMachineListResponse] = useState<MachineListResponseBody|undefined>();
+
+    const [selectedHallId, setSelectedHallId] = useState<number|undefined>();   //  Selectコンポーネントで選択されているホールID
+    const [selectedHallUuid, setSelectedHallUuid] = useState<string|undefined>();
+    const [selectedFloorUuid, setSelectedFloorUuid] = useState<string|undefined>();
 
     useEffect(()=>{(async()=>{
         //  過去1日分取得
@@ -112,7 +117,22 @@ export const EldoradoContent: React.FC = () => {
         hallsTmp.halls.sort((a,b)=>b.open_time - a.open_time);
         setHallsResponse(hallsTmp);
         setSelectedHallId(hallsTmp.halls[0].hall_id);
+        setSelectedHallUuid(hallsTmp.halls[0].hall_uuid);
     })();}, []);
+
+    //  日付含むホールが変更された時
+    useEffect(()=>{(async()=>{
+        if(selectedHallUuid === undefined) {
+            setFloorsResponse(undefined);
+        }
+        else {
+            const res = await Eldorado.getFloors(selectedHallUuid);
+            //  フロアNoの昇順でソート
+            res.floors.sort((a,b)=>a.floor_no - b.floor_no);
+            setFloorsResponse(res);
+            setSelectedFloorUuid(res.floors[0].floor_uuid);
+        }
+    })();}, [selectedHallUuid]);
 
     useEffect(()=>{(async()=>{
         const machineListTmp = await Eldorado.getMachineList("e01a7c26-5377-406d-b0ab-bbe7fa14fd82");
@@ -134,6 +154,36 @@ export const EldoradoContent: React.FC = () => {
         //  島の一番右が1となるように配列を逆順に変換
         return linesTmp.map(line=>line.reverse());
     }, []);
+
+    const hallChange = (event: SelectChangeEvent) => {
+        setSelectedHallId(Number(event.target.value));
+    };
+    const dateChange = (event: SelectChangeEvent) => {
+        setSelectedHallUuid(event.target.value);
+    };
+    const floorChange = (event: SelectChangeEvent) => {
+        setSelectedFloorUuid(event.target.value);
+    };
+
+    const hallItems = () => {
+        if(hallsResponse === undefined) { return undefined; }
+        //  重複無しのホールIDでMenuItemの配列を作成
+        return Array.from(new Set(hallsResponse.halls.map(h=>h.hall_id))).map(hallId=>{
+            return <MenuItem value={hallId} key={`${hallId}`}>{hallsResponse.halls.find(h=>h.hall_id === hallId)!.hall_name}</MenuItem>;
+        });
+    };
+    const dateItems = () => {
+        return hallsResponse && hallsResponse.halls.filter(h=>h.hall_id === selectedHallId).map(h=>{
+            return <MenuItem value={h.hall_uuid} key={`${h.hall_uuid}`}>{format(Util.toDate(h.open_time), "MM/dd")}</MenuItem>
+        });
+    };
+    const floorItems = () => {
+        return floorsResponse && floorsResponse.floors.map(f=>{
+            return <MenuItem value={f.floor_uuid} key={`${f.floor_uuid}`}>
+                {`${f.floor_no}F `}
+            </MenuItem>
+        });
+    };
     
     return (
         <Grid container spacing={1} sx={{height: "100%", minWidth: "720px"}}>
@@ -143,15 +193,25 @@ export const EldoradoContent: React.FC = () => {
             <Grid container spacing={1}>
                 
                 <Grid item xs={12} lg={8} key={"{F24A5520-3689-4101-B039-F4D7FE2D2FAF}"}>
-                <FormControl sx={{ m: 1, minWidth: "200px" }} size="small">
-                    <Select sx={{}} value={selectedHallId ?? ""}>
-                        {
-                            hallsResponse && hallsResponse.halls.map(h=>{
-                                return <MenuItem value={h.hall_id} key={`${h.hall_id}`}>{h.hall_name}</MenuItem>
-                            })
-                        }
-                    </Select>
-                </FormControl>
+                    {/* ホール選択 */}
+                    <FormControl sx={{ m: 1, minWidth: "200px" }} size="small">
+                        <Select value={selectedHallId ? `${selectedHallId}`: ""} onChange={hallChange}>
+                            { hallItems() }
+                        </Select>
+                    </FormControl>
+                    {/* 日付選択 */}
+                    <FormControl sx={{ m: 1, minWidth: "100px" }} size="small">
+                        <Select value={selectedHallUuid ?? ""} onChange={dateChange}>
+                            { dateItems() }
+                        </Select>
+                    </FormControl>
+                    {/* フロア選択 */}
+                    <FormControl sx={{ m: 1, minWidth: "100px" }} size="small">
+                        <Select value={selectedFloorUuid ?? ""} onChange={floorChange}>
+                            { floorItems() }
+                        </Select>
+                    </FormControl>
+
                 </Grid>
             {
                 machineListResponse && machineNoListForDisplay.map((line, i)=>{
