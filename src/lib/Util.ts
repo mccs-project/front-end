@@ -11,11 +11,11 @@ export class Util {
         return Array.from(crypto.getRandomValues(new Uint8Array(len))).map((n) => S[n % S.length]).join('');
     }
 
-    public static toUnixTime(datetime: Date) {
+    public static toUnixTime(datetime: Date): number {
         return Math.floor(datetime.getTime() / 1000);
     }
 
-    public static toDate(unixTime: number) {
+    public static toDate(unixTime: number): Date {
         return new Date(unixTime * 1000);
     }
 }
