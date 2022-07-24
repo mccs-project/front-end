@@ -12,11 +12,6 @@ export class Eldorado {
         return LocalApi.getEldoradoHalls(requestBody);
     }
 
-    //   TODO: 削除
-    public static async getLatestHalls(): Promise<HallsResponseBody> {
-        return LocalApi.getEldoradoLatestHalls();
-    }
-
     public static async getFloors(hallUuid: string): Promise<FloorsResponseBody> {
         return LocalApi.getFloors({hall_uuid: hallUuid});
     }

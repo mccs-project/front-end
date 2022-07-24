@@ -92,12 +92,6 @@ export class LocalApi {
         return response.json();
     }
 
-    /** 各ホールの最新情報を取得します。 */
-    public static async getEldoradoLatestHalls(): Promise<HallsResponseBody> {
-        const response = await myFetch(ApiPath.ELDORADO_LATEST_HALLS);
-        return response.json();
-    }
-
     /** 指定したホールのフロア一覧を取得します。 */
     public static async getFloors(requestBody: FloorsRequestBody): Promise<FloorsResponseBody> {
         const response = await myFetch(ApiPath.ELDORADO_FLOORS, { method: "POST", body: JSON.stringify(requestBody) });
