@@ -1,4 +1,4 @@
-import { HallFloorsRequestBody, HallFloorsResponseBody, HallsRequestBody, HallsResponseBody, MachineListRequestBody, MachineListResponseBody, TokenResponseBody, TwitterOAuth2AccessUrlResponseBody, TwitterTokenRequestBody, TwitterUsersMeResponseBody } from "../shared/api/interfaces";
+import { FloorsRequestBody, FloorsResponseBody, HallsRequestBody, HallsResponseBody, MachineListRequestBody, MachineListResponseBody, TokenResponseBody, TwitterOAuth2AccessUrlResponseBody, TwitterTokenRequestBody, TwitterUsersMeResponseBody } from "../shared/api/interfaces";
 import { ApiPath } from "../shared/api/Path";
 import { Env } from "./Env";
 import { Token } from "./Token";
@@ -99,7 +99,7 @@ export class LocalApi {
     }
 
     /** 指定したホールのフロア一覧を取得します。 */
-    public static async getFloors(requestBody: HallFloorsRequestBody): Promise<HallFloorsResponseBody> {
+    public static async getFloors(requestBody: FloorsRequestBody): Promise<FloorsResponseBody> {
         const response = await myFetch(ApiPath.ELDORADO_FLOORS, { method: "POST", body: JSON.stringify(requestBody) });
         return response.json();
     }

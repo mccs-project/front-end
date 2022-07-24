@@ -3,7 +3,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Eldorado } from "../../lib/Eldorado";
 import { Util } from "../../lib/Util";
-import { HallFloorsResponseBody, HallsResponseBody, MachineListResponseBody } from "../../shared/api/interfaces";
+import { FloorsResponseBody, HallsResponseBody, MachineListResponseBody } from "../../shared/api/interfaces";
 import PersonIcon from '@mui/icons-material/Person';
 import { MachineType } from "../../shared/enum/Eldorado";
 import { format } from "date-fns";
@@ -102,7 +102,7 @@ const EldoradoFloor: React.FC = () => {
 export const EldoradoContent: React.FC = () => {
 
     const [hallsResponse, setHallsResponse] = useState<HallsResponseBody|undefined>();
-    const [floorsResponse, setFloorsResponse] = useState<HallFloorsResponseBody|undefined>();
+    const [floorsResponse, setFloorsResponse] = useState<FloorsResponseBody|undefined>();
     const [machineListResponse, setMachineListResponse] = useState<MachineListResponseBody|undefined>();
 
     const [selectedHallId, setSelectedHallId] = useState<number|undefined>();   //  Selectコンポーネントで選択されているホールID

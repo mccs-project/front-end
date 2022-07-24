@@ -1,4 +1,4 @@
-import { HallFloorsResponseBody, HallsRequestBody, HallsResponseBody, MachineListResponseBody } from "../shared/api/interfaces";
+import { FloorsResponseBody, HallsRequestBody, HallsResponseBody, MachineListResponseBody } from "../shared/api/interfaces";
 import { LocalApi } from "./RestApi";
 import { Util } from "./Util";
 
@@ -17,7 +17,7 @@ export class Eldorado {
         return LocalApi.getEldoradoLatestHalls();
     }
 
-    public static async getFloors(hallUuid: string): Promise<HallFloorsResponseBody> {
+    public static async getFloors(hallUuid: string): Promise<FloorsResponseBody> {
         return LocalApi.getFloors({hall_uuid: hallUuid});
     }
 
