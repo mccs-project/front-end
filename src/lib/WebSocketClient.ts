@@ -14,7 +14,7 @@ export abstract class WebSocketClientBase {
         this._ws = new ReconnectingWebSocket(this.getServerUrl(url));
 
         this._ws.onmessage = async(event: MessageEvent<any>)=>{ await this._onMessage(event); };
-        this._ws.onopen = async() => { this._initialize(); };
+        this._ws.onopen = async() => { this._initialized = false; this._initialize(); };
     }
     private getServerUrl(url: string): string {
         //  NODE_ENVがdevelopmentかつ、モックサーバーを起動しない場合は宛先のサーバーを環境変数の内容で上書き
