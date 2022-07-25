@@ -10,6 +10,7 @@ import { format } from "date-fns";
 import { ja } from "date-fns/locale";
 import { WebSocketClientBase } from "../../lib/WebSocketClient";
 import { IWsMessage, WsEldoradoSubscribeEventRequest, WsInitializeRequest } from "../../shared/api/WebSocketMessage";
+import { WebSocketCommand } from "../../shared/api/WebSocketCommnad";
 
 type HallCardProps = {
     hallName: string;
@@ -112,6 +113,13 @@ export const EldoradoContent: React.FC = () => {
     const [selectedHallUuid, setSelectedHallUuid] = useState<string|undefined>();   //  日付コンポーネントで選択された時に確定するホール識別子
     const [selectedFloorUuid, setSelectedFloorUuid] = useState<string|undefined>(); //  選択されているフロア識別子
 
+    const updateMachineListResponse = useCallback(async(selectedFloorUuid: string)=>{
+        const machineListTmp = await Eldorado.getMachineList(selectedFloorUuid);
+        //  machinesをmachine_noの昇順にソートした状態で格納
+        machineListTmp.machines.sort((a,b)=>a.machine_no - b.machine_no);
+        setMachineListResponse(machineListTmp);
+    }, []);
+
     const webSocket = useRef<WebSocketClientBase|undefined>();
     useEffect(()=>{
         webSocket.current = new class extends WebSocketClientBase {
@@ -120,11 +128,12 @@ export const EldoradoContent: React.FC = () => {
                 this.on("initialized", ()=>{ this.onInitialize(); });
             }
             private async onInitialize(): Promise<void> {
-                console.log("WebSocket is initialized!!");
                 this.send(new WsEldoradoSubscribeEventRequest());
             }
             protected async onMessage(message: IWsMessage): Promise<void> {
-                console.log(message);
+                if(message.command === WebSocketCommand.ELDORADO_MACHINE_INFO_UPDATED && selectedFloorUuid) {
+                    updateMachineListResponse(selectedFloorUuid);
+                }
             }
         };
 
@@ -162,10 +171,7 @@ export const EldoradoContent: React.FC = () => {
             setMachineListResponse(undefined);
         }
         else {
-            const machineListTmp = await Eldorado.getMachineList(selectedFloorUuid);
-            //  machinesをmachine_noの昇順にソートした状態で格納
-            machineListTmp.machines.sort((a,b)=>a.machine_no - b.machine_no);
-            setMachineListResponse(machineListTmp);
+            updateMachineListResponse(selectedFloorUuid);
         }
     })();}, [selectedFloorUuid]);
 
