@@ -1,6 +1,6 @@
 import ReconnectingWebSocket, { Message } from "reconnecting-websocket";
 import { WebSocketCommand } from "../shared/api/WebSocketCommnad";
-import { IWebSocketMessage, WebSocketResponseBase, WsInitializeRequest } from "../shared/api/WebSocketMessage";
+import { IWsMessage, WsResponseBase, WsInitializeRequest } from "../shared/api/WebSocketMessage";
 import { Env } from "./Env";
 import { Token } from "./Token";
 
@@ -45,9 +45,9 @@ export abstract class WebSocketClientBase {
     }
 
     private async _onMessage(event: MessageEvent<any>): Promise<void> {
-        const message: IWebSocketMessage = JSON.parse(event.data);
+        const message: IWsMessage = JSON.parse(event.data);
         if(message.command === WebSocketCommand.INITIALIZE_RESPONSE) {
-            const initializeCommand: WebSocketResponseBase = message as WebSocketResponseBase;
+            const initializeCommand: WsResponseBase = message as WsResponseBase;
             if(initializeCommand.status === 200) {
                 this._initialized = true;
                 this._onInitialized?.apply(this);
@@ -61,7 +61,7 @@ export abstract class WebSocketClientBase {
             this.onMessage(message);
         }
     }
-    protected abstract onMessage(message: IWebSocketMessage): Promise<void>;
+    protected abstract onMessage(message: IWsMessage): Promise<void>;
 
     private _onInitialized: (()=>void)|undefined = undefined;
     public on(eventType: "initialized", callback: ()=>void): void {
@@ -75,7 +75,7 @@ export abstract class WebSocketClientBase {
         }
     }
 
-    public send(data: IWebSocketMessage): void {
+    public send(data: IWsMessage): void {
         this._ws.send(JSON.stringify(data));
     }
     public close(code?: number, reason?: string): void {
