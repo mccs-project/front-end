@@ -131,7 +131,7 @@ export const EldoradoContent: React.FC = () => {
                 this.send(new WsEldoradoSubscribeEventRequest());
             }
             protected async onMessage(message: IWsMessage): Promise<void> {
-                if(message.command === WebSocketCommand.ELDORADO_MACHINE_INFO_UPDATED && selectedFloorUuid) {
+                if(message.command === WebSocketCommand.ELDORADO_MACHINE_DETAIL_UPDATED && selectedFloorUuid) {
                     updateMachineListResponse(selectedFloorUuid);
                 }
             }
