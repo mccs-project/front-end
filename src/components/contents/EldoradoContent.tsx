@@ -9,7 +9,7 @@ import { MachineType } from "../../shared/enum/Eldorado";
 import { format } from "date-fns";
 import { ja } from "date-fns/locale";
 import { WebSocketClientBase } from "../../lib/WebSocketClient";
-import { WsInitializeRequest } from "../../shared/api/WebSocketMessage";
+import { IWebSocketMessage, WsEldoradoSubscribeEventRequest, WsInitializeRequest } from "../../shared/api/WebSocketMessage";
 
 type HallCardProps = {
     hallName: string;
@@ -115,8 +115,16 @@ export const EldoradoContent: React.FC = () => {
     const webSocket = useRef<WebSocketClientBase|undefined>();
     useEffect(()=>{
         webSocket.current = new class extends WebSocketClientBase {
-            protected async onMessage(event: MessageEvent<any>): Promise<void> {
-                // console.log(event);
+            constructor() {
+                super();
+                this.on("initialized", ()=>{ this.onInitialize(); });
+            }
+            private async onInitialize(): Promise<void> {
+                console.log("WebSocket is initialized!!");
+                this.send(new WsEldoradoSubscribeEventRequest());
+            }
+            protected async onMessage(message: IWebSocketMessage): Promise<void> {
+                console.log(message);
             }
         };
 

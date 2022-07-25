@@ -1,6 +1,6 @@
 import ReconnectingWebSocket, { Message } from "reconnecting-websocket";
 import { WebSocketCommand } from "../shared/api/WebSocketCommnad";
-import { WebSocketMessage, WebSocketResponseBase, WsInitializeRequest } from "../shared/api/WebSocketMessage";
+import { IWebSocketMessage, WebSocketResponseBase, WsInitializeRequest } from "../shared/api/WebSocketMessage";
 import { Env } from "./Env";
 import { Token } from "./Token";
 
@@ -14,7 +14,7 @@ export abstract class WebSocketClientBase {
         this._ws = new ReconnectingWebSocket(this.getServerUrl(url));
 
         this._ws.onmessage = async(event: MessageEvent<any>)=>{ await this._onMessage(event); };
-        this._ws.onopen = async() => { this.initialize(); };
+        this._ws.onopen = async() => { this._initialize(); };
     }
     private getServerUrl(url: string): string {
         //  NODE_ENVがdevelopmentかつ、モックサーバーを起動しない場合は宛先のサーバーを環境変数の内容で上書き
@@ -27,7 +27,7 @@ export abstract class WebSocketClientBase {
         }
     }
 
-    private async initialize(): Promise<void> {
+    private async _initialize(): Promise<void> {
         if(this._initialized) { throw new Error("{7ADED48A-D754-488C-85D2-3A218BA969B8}"); }
 
         const retryInitialize = async()=>{
@@ -45,11 +45,12 @@ export abstract class WebSocketClientBase {
     }
 
     private async _onMessage(event: MessageEvent<any>): Promise<void> {
-        const message: WebSocketMessage = JSON.parse(event.data);
+        const message: IWebSocketMessage = JSON.parse(event.data);
         if(message.command === WebSocketCommand.INITIALIZE_RESPONSE) {
             const initializeCommand: WebSocketResponseBase = message as WebSocketResponseBase;
             if(initializeCommand.status === 200) {
                 this._initialized = true;
+                this._onInitialized?.apply(this);
             }
             else {
                 console.log("{8C470312-F8A4-4A0F-A8BF-8FD413177033}");
@@ -57,13 +58,24 @@ export abstract class WebSocketClientBase {
             }
         }
         else {
-            this.onMessage(event);
+            this.onMessage(message);
         }
     }
-    protected abstract onMessage(event: MessageEvent<any>): Promise<void>;
+    protected abstract onMessage(message: IWebSocketMessage): Promise<void>;
 
+    private _onInitialized: (()=>void)|undefined = undefined;
+    public on(eventType: "initialized", callback: ()=>void): void {
+        switch(eventType) {
+            case "initialized":
+                this._onInitialized = callback;
+                break;
+            default:
+                //  未実装
+                throw new Error("{E4D6C17D-C958-4BCC-BBFE-B5DC96221E88}");
+        }
+    }
 
-    public send(data: WebSocketMessage): void {
+    public send(data: IWebSocketMessage): void {
         this._ws.send(JSON.stringify(data));
     }
     public close(code?: number, reason?: string): void {
