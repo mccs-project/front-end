@@ -1,7 +1,7 @@
 import { DefaultBodyType, PathParams, ResponseComposition, rest, RestContext, RestRequest } from 'msw';
 import { MockToken } from './handlers/MockToken';
 import { ApiPath } from '../shared/api/Path';
-import { MockTwitter } from './handlers/MockTwitter';
+import { MockTwitter, MockEldorado } from './handlers';
 
 const getResponse = async<T extends RestRequest>(req: T, res: ResponseComposition<DefaultBodyType>, ctx: RestContext) => {
 
@@ -12,6 +12,8 @@ const getResponse = async<T extends RestRequest>(req: T, res: ResponseCompositio
             
             case ApiPath.TOKEN: return new MockToken().getResponse(req);
             case ApiPath.TWITTER_GET_USERS_ME: return new MockTwitter().getUsersMe();
+            case ApiPath.ELDORADO_HALLS: return MockEldorado.getHalls(req);
+            case ApiPath.ELDORADO_MACHINES: return MockEldorado.getMachineList(req);
 
             default: throw new Error("{88CC17F3-0674-41E3-BE53-3DF7BD448E68}");
         }

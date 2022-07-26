@@ -106,6 +106,7 @@ export const TwitterAccountButton: React.FC = () => {
     //  meが変更されたタイミングでTwitter接続状態を更新
     useEffect(()=>{
         setIsTwitterConnected(Boolean(me));
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [me]);
 
     //  認可処理を定義
@@ -153,6 +154,7 @@ export const MetaMaskAccountButton: React.FC = ()=>{
         setDisplayAccount(account ? `${account.slice(0, 5)}...${account.slice(-4)}` : undefined);
         //  接続状態を更新
         setIsMetaMaskConnected(Boolean(account));
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [account]);
 
     useEffect(()=>{
@@ -172,6 +174,7 @@ export const MetaMaskAccountButton: React.FC = ()=>{
             setIsMetaMaskConnected(connected);
             setLoading(false);
         })();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (

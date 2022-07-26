@@ -1,4 +1,4 @@
-import { TokenResponseBody, TwitterOAuth2AccessUrlResponseBody, TwitterTokenRequestBody, TwitterUsersMeResponseBody } from "../shared/api/interfaces";
+import { FloorsRequestBody, FloorsResponseBody, HallsRequestBody, HallsResponseBody, MachineListRequestBody, MachineListResponseBody, TokenResponseBody, TwitterOAuth2AccessUrlResponseBody, TwitterTokenRequestBody, TwitterUsersMeResponseBody } from "../shared/api/interfaces";
 import { ApiPath } from "../shared/api/Path";
 import { Env } from "./Env";
 import { Token } from "./Token";
@@ -67,10 +67,10 @@ export class LocalApi {
         return await response.json();
     }
 
-    public static async postTwitterOAuth2Token(postData: TwitterTokenRequestBody){
+    public static async postTwitterOAuth2Token(requestBody: TwitterTokenRequestBody){
         const response = await myFetch(ApiPath.TWITTER_OAUTH2_TOKEN, {
             method: "POST",
-            body: JSON.stringify(postData),
+            body: JSON.stringify(requestBody),
         })
 
         //  一旦応答のステータスが正常でない場合に例外を投げておく
@@ -85,5 +85,21 @@ export class LocalApi {
     public static async getTwitterOAuth2AccessUrl(): Promise<TwitterOAuth2AccessUrlResponseBody> {
         const response = await myFetch(ApiPath.TWITTER_OAUTH2_ACCESS_URL);
         return await response.json();
+    }
+
+    public static async getEldoradoHalls(requestBody: HallsRequestBody): Promise<HallsResponseBody> {
+        const response = await myFetch(ApiPath.ELDORADO_HALLS, { method: "POST", body: JSON.stringify(requestBody) });
+        return response.json();
+    }
+
+    /** 指定したホールのフロア一覧を取得します。 */
+    public static async getFloors(requestBody: FloorsRequestBody): Promise<FloorsResponseBody> {
+        const response = await myFetch(ApiPath.ELDORADO_FLOORS, { method: "POST", body: JSON.stringify(requestBody) });
+        return response.json();
+    }
+
+    public static async getMachines(requestBody: MachineListRequestBody): Promise<MachineListResponseBody> {
+        const response = await myFetch(ApiPath.ELDORADO_MACHINES, { method: "POST", body: JSON.stringify(requestBody) });
+        return response.json();
     }
 }
