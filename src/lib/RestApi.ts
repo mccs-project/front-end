@@ -98,8 +98,8 @@ export class LocalApi {
         return response.json();
     }
 
-    public static async getMachineList(requestBody: MachineListRequestBody): Promise<MachineListResponseBody> {
-        const response = await myFetch(ApiPath.ELDORADO_MACHINE_LIST, { method: "POST", body: JSON.stringify(requestBody) });
+    public static async getMachines(requestBody: MachineListRequestBody): Promise<MachineListResponseBody> {
+        const response = await myFetch(ApiPath.ELDORADO_MACHINES, { method: "POST", body: JSON.stringify(requestBody) });
         return response.json();
     }
 }

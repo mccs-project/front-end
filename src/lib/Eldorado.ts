@@ -16,7 +16,7 @@ export class Eldorado {
         return LocalApi.getFloors({hall_uuid: hallUuid});
     }
 
-    public static async getMachineList(floorUuid: string): Promise<MachineListResponseBody> {
-        return LocalApi.getMachineList({ floor_uuid: floorUuid });
+    public static async getMachines(floorUuid: string): Promise<MachineListResponseBody> {
+        return LocalApi.getMachines({ floor_uuid: floorUuid });
     }
 }
